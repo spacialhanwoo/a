@@ -1,0 +1,153 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <title>Document</title>
+</head>
+<body>
+<h2 id="score">0</h2>
+<canvas id="canvas"></canvas>
+<button onclick="showDebug()">DEBUG</button>
+<h2 id="debug">o</h2>
+<h2 id="debug2">o</h2>
+<h2 id="frame">o</h2>
+<h2 id="gameover">o</h2>
+<h2 id="wow">It's the World's Funniest Game!</h2>
+<button id="cancel" onclick="cancelDebug()">cancel</button>
+<script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var cactusNo = 0;
+    var gameOver = false;
+    cancelDebug();
+    function showDebug() {
+        document.getElementById('debug').style.display = 'block';
+        document.getElementById('debug2').style.display = 'block';
+        document.getElementById('frame').style.display = 'block';
+        document.getElementById('gameover').style.display = 'block';
+        document.getElementById('wow').style.display = 'block';
+        document.getElementById('cancel').style.display = 'block';
+    }
+    function cancelDebug() {
+        document.getElementById('debug').style.display = 'none';
+        document.getElementById('debug2').style.display = 'none';
+        document.getElementById('frame').style.display = 'none';
+        document.getElementById('gameover').style.display = 'none';
+        document.getElementById('wow').style.display = 'none';
+        document.getElementById('cancel').style.display = 'none';
+    }
+
+
+    canvas.width = window.innerWidth - 100;
+    canvas.height = window.innerHeight - 500;
+
+    var dino = {
+        x : 10,
+        y : 200,
+        width : 50,
+        height : 50,
+        draw() {
+            ctx.fillStyle = 'green';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        }
+    }
+
+        class Cactus {
+            constructor(){
+            this.x = 1000;
+            this.y = 200;
+            this.width = 50;
+            this.height = 50;
+            }
+        draw() {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+
+        }
+    }
+
+        var timer = -1;
+        var cactuses = [];
+        var score = 0;
+        var animation;
+        var jumpTimer = 0;
+
+        function doEachFrame () {
+            animation = requestAnimationFrame(doEachFrame);
+            timer++;
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+
+            if (timer % 100 == 0) {
+                var cactus = new Cactus();
+                cactuses.push(cactus);
+                cactusNo++;
+            }
+            dino.draw();
+            cactuses.forEach((a, i, o)=>{
+            if (a.x < -20) {
+                o.splice(i, 1)
+            }
+            a.x = a.x - 2;
+            a.draw();
+            breakF(dino, a);
+            })
+
+
+            if (jump == true) {
+                dino.y = dino.y - 7;
+                jumpTimer++;
+            }
+            if (dino.y < -45) {
+                jump = false;
+            }
+
+
+            if (jump == false) {
+                if (dino.y < 200) {
+                dino.y = dino.y + 7;
+                jump2 = false;
+                jumpTimer++;
+                }
+            }
+            if (jumpTimer == 72) {
+                jumpTimer = 0;
+            }
+
+            if (timer % 6 == 0) {
+            score = score + 1;
+            }
+            document.getElementById('score').innerHTML ="SCORE:" + score / 10;
+
+        dino.draw()
+        document.getElementById('debug').innerHTML = "green :" + "  x=" + dino.x + ", y=" + dino.y + ", jumpTimer=" + jumpTimer;
+        document.getElementById('debug2').innerHTML = "spawned red  : " + cactusNo;
+        document.getElementById('frame').innerHTML = "animation frame : " + animation;
+        document.getElementById('gameover').innerHTML = "game over : " + gameOver;
+        }
+
+        doEachFrame();
+
+        function breakF(dino, a) {
+            var xch = a.x - (dino.x + dino.width);
+            var ych = a.y - (dino.y + dino.height);
+            if(xch < 0 && ych < 0) {
+                gameOver = true;
+                cancelAnimationFrame(animation);
+            }
+        }
+
+        var jump = false;
+
+        document.addEventListener('keydown', function(e){
+        if (e.code == 'Space' && jumpTimer == 0) {
+        jump = true;
+        }
+        })
+
+
+
+</script>
+</body>
+</html>
